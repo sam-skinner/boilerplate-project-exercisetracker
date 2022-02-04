@@ -61,10 +61,10 @@ app.post("/api/users/:_id/exercises", (req, res) => {
     if (err) return res.json({ error: err });
     const exercise = {
       description: req.body.description,
-      duration: req.body.duration,
+      duration: parseInt(req.body.duration),
       date: req.body.date
-        ? req.body.date
-        : new Date().toISOString().split("T")[0],
+        ? new Date(req.body.date).toDateString()
+        : new Date().toDateString(),
     };
     user.log.push(exercise);
     user.count = user.log.length;
@@ -94,7 +94,7 @@ app.get("/api/users/:_id/logs", (req, res) => {
       );
     }
     if (req.query.to) {
-      log = log.filter(exercise => exercise.date <= req.query.to);
+      log = log.filter(exercise => new Date(exercise.date) <= new Date(req.query.to));
     }
     if (req.query.limit) {
       log.splice(req.query.limit);
